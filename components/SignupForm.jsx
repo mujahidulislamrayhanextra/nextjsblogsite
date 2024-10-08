@@ -12,25 +12,25 @@ const initialState = {
 
 
 const SignupForm = () => {
-  const [hydrated,setHydrated] = useState(false);
-  
-  const [state,setState ] = useState(initialState);
+  const [hydrated, setHydrated] = useState(false);
 
-  const [error,setError] = useState("")
+  const [state, setState] = useState(initialState);
 
-  const [success,setSuccess] = useState("")
+  const [error, setError] = useState("")
 
-  const [isLoading,setIsLoading] = useState(false)
+  const [success, setSuccess] = useState("")
+
+  const [isLoading, setIsLoading] = useState(false)
 
   const router = useRouter();
-  
- 
+
+
 
   useEffect(() => {
     setHydrated(true)
-  },[])
+  }, [])
 
-  if(!hydrated){
+  if (!hydrated) {
     return null
   }
 
@@ -38,101 +38,103 @@ const SignupForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const {name,email,password } = state;
+    const { name, email, password } = state;
 
-    if(!name || !email || !password){
+    if (!name || !email || !password) {
       setError("All fields are require");
       return;
     }
 
     const pattern = /^((?!\.)[\w\-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/
 
-    if(!pattern.test(email)){
+    if (!pattern.test(email)) {
       setError("Please enter a valid email address.")
       return;
     }
-    if(password.length < 6 ){
+    if (password.length < 6) {
       setError("Password must be at least 6 character long.");
       return;
     }
 
-     try {
+    try {
       setIsLoading(true)
-      const newUser = {name ,email,password}
+      const newUser = { name, email, password }
 
       const response = await fetch(" http://localhost:3000/api/signup",
-      {  headers: {
-        "Content-Type": "application/json"
+        {
+          headers: {
+            "Content-Type": "application/json"
 
-      },
-      method:"POST",
-      body: JSON.stringify(newUser)}
-      )
-        if(response?.status === 201 ){
-             setSuccess("Registration Successful");
-             setTimeout(()=> {
-                router.push("/login",{scroll:false})
-             },1000 )
-        } 
-        else{
-          setError("Error occured while registering")
+          },
+          method: "POST",
+          body: JSON.stringify(newUser)
         }
-    
-     } catch (error) {
+      )
+      if (response?.status === 201) {
+        setSuccess("Registration Successful");
+        setTimeout(() => {
+          router.push("/login", { scroll: false })
+        }, 1000)
+      }
+      else {
+        setError("Error occured while registering")
+      }
+
+    } catch (error) {
       console.log(error)
-      
-     }
- setIsLoading(false)
-   
+
+    }
+    setIsLoading(false)
+
   }
-  
-
-  
-  
-   
 
 
 
-  const handleChange = (event) =>{
+
+
+
+
+
+  const handleChange = (event) => {
     setError("")
-    setState({...state,[event.target.name]: event.target.value})
+    setState({ ...state, [event.target.name]: event.target.value })
   }
 
 
 
   return (
-   <section className='container'>
-    <form onSubmit={handleSubmit} className='border-2 border-paragrapColor rounded-lg max-w-sm mx-auto px-8 py-6 space-y-5'
-    >
+    <section className='container'>
+      <form onSubmit={handleSubmit} className='border-2 border-paragrapColor rounded-lg max-w-sm mx-auto px-8 py-6 space-y-5'
+      >
         <h2 className='text-center special-word'>Sign up</h2>
         <Input label="Name" type="text" name="name" onChange={handleChange} value={state.name} />
         <Input label="Email" type="email" name="email" onChange={handleChange} value={state.email} />
-        <Input label="Password" type="password" name="password" onChange={handleChange} value={state.password}/>
+        <Input label="Password" type="password" name="password" onChange={handleChange} value={state.password} />
 
         {
           error && <div className='text-red-700 '>
-                 {error}
+            {error}
           </div>
         }
-        
 
-        
+
+
         {
           success && <div className='text-green-700 '>
-              {success}
+            {success}
           </div>
         }
 
 
 
         <button type='submit' className='btn w-full'   >
-             {isLoading ? "Loading" : "Sign up"}
+          {isLoading ? "Loading" : "Sign up"}
         </button>
 
         <p className='text-center '>Already a user ? {" "} <Link href={"/login"} className='text-primaryColor' >Login</Link></p>
-        </form>
-      
-   </section>
+      </form>
+
+    </section>
   )
 }
 
