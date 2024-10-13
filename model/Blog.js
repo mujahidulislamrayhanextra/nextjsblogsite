@@ -1,4 +1,4 @@
-import { type } from "express/lib/response";
+
 import mongoose from "mongoose";
 
 
@@ -6,7 +6,7 @@ const BlogSchema = new mongoose.Schema(
     {
         title: {
             type : String,
-            required: true.,
+            required: true,
             min:4 
         },
         description: {
@@ -19,7 +19,7 @@ const BlogSchema = new mongoose.Schema(
             required: true,
             min: 10
         },
-        quote: {
+        qoute: {
             type : String,
             required: true,
             min:6
@@ -34,9 +34,17 @@ const BlogSchema = new mongoose.Schema(
             }
 
         },
-        catagory:{
+        category:{
             type: String,
-            required:true
+            required:true,
+            enum:[
+                "Songsbirds",
+                "Waterfowls",
+                "Parrots",
+                "Seabirds",
+                "Gamebirds",
+
+            ] 
 
         },
         authorId : {
@@ -48,7 +56,7 @@ const BlogSchema = new mongoose.Schema(
             ref : "User",
             default:[]
         },
-        commnets:[{
+        comments:[{
             user : {
                 type: mongoose.Schema.Types.ObjectId,
                 ref : "User",
@@ -58,7 +66,7 @@ const BlogSchema = new mongoose.Schema(
                 type: String,
                 required:true
             },
-            data:{
+            date:{
                 type: Date,
                 default:Date.now
             }
