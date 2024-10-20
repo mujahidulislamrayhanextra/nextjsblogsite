@@ -59,11 +59,13 @@ const UPLOAD_PRESET ="nextjs_blog_image"
       setState({...state, [name]:value})
     }
   }
-
+ console.log(state)
   const handleSubmit = async(e) =>{
     e.preventDefault();
 
     const {photo, title, category, description, excerpt, qoute} = state;
+
+    
 
     if( !title || !description || !category || !excerpt || !qoute  ){
       setError("Please fill out all required fields");
@@ -110,6 +112,7 @@ const UPLOAD_PRESET ="nextjs_blog_image"
         const image = await uploadImage();
         const newBlog = {
           title,
+          category,
           description,
           excerpt,
           qoute,

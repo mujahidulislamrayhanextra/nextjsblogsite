@@ -37,14 +37,7 @@ const BlogSchema = new mongoose.Schema(
         category:{
             type: String,
             required:true,
-            enum:[
-                "Songsbirds",
-                "Waterfowls",
-                "Parrots",
-                "Seabirds",
-                "Gamebirds",
-
-            ] 
+            enum:["Songbirds","Waterfowls","Parrots","Seabirds","Gamebirds",] 
 
         },
         authorId : {
