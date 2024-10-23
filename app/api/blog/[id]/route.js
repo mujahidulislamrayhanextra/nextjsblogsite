@@ -98,7 +98,7 @@ export async function PUT(req,res) {
 
   const updateBlog = await Blog.findByIdAndUpdate(id,{$set: {...body}},{new:true})
 
-            return NextResponse.json(updateBlog,{status:201})
+            return NextResponse.json(updateBlog,{status:200})
             
          } catch (error) {
             return NextResponse.json(error);
