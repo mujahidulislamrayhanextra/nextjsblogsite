@@ -72,7 +72,7 @@ export async function PUT(req,res) {
          const accessToken = req.headers.get("authorization");
          const token = accessToken.split(" ")[1];
              
-         console.log(accessToken)
+         // console.log(accessToken)
 
          const decodedToken = verifyJwtToken(token);
 
@@ -139,7 +139,7 @@ export async function DELETE(req,res) {
     const accessToken = req.headers.get("authorization");
     const token = accessToken.split(" ")[1];
         
-    console.log(accessToken)
+   //  console.log(accessToken)
 
     const decodedToken = verifyJwtToken(token);
 
@@ -165,7 +165,7 @@ return NextResponse.json(
 
 await Blog.findByIdAndDelete(id)
 
-       return NextResponse.json({message:"Blog Deleted"},{status:201})
+       return NextResponse.json({message:"Blog Deleted"},{status:200})
        
     } catch (error) {
        return NextResponse.json(error);

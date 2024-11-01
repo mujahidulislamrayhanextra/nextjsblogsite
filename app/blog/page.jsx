@@ -23,7 +23,7 @@ const Blog = async () => {
 
     const otherBlogs = blogs?.length > 0 && blogs.slice(1)
          
-    console.log(blogs)
+    // console.log(blogs)
     return (
         <div> 
             {blogs?.length > 0 ? (<> 

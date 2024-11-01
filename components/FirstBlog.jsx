@@ -8,7 +8,7 @@ import { AiTwotoneCalendar } from 'react-icons/ai';
 import moment from 'moment';
 
 const FirstBlog = ({ firstBlog }) => {
-  const dddd = {firstBlog}
+  // const dddd = {firstBlog}
 
   const timeStr = firstBlog?.createAt;
    
@@ -16,7 +16,7 @@ const FirstBlog = ({ firstBlog }) => {
 
   const formattedTime = time.format("MMMM Do YYYY")
     
-  console.log(dddd) 
+  // console.log(dddd) 
 
 
 

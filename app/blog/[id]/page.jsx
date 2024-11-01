@@ -4,15 +4,16 @@ import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import {BsFillPencilFill ,BsTrash} from "react-icons/bs";
 import  demoImage  from '@/public/img/demo_image.jpg';
-import { AiFillHeart, AiOutlineComment, AiTwotoneCalendar } from 'react-icons/ai';
+import { AiFillHeart, AiOutlineComment, AiOutlineHeart, AiTwotoneCalendar } from 'react-icons/ai';
 import Input from '@/components/Input';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import moment from 'moment';
+import { deletePhoto } from '@/action/uploadAction';
 
 
 
-const Blogdetails = ({params}) => {
+const Blogdetails = () => {
 
 
     function splitParagraph(paragraph) {
@@ -45,10 +46,21 @@ const Blogdetails = ({params}) => {
 
     const [blogDetails,setBlogDetails] = useState({});
 
+       
+    const [isDeleting,setIsDeleting] = useState(false)
 
+
+    const [isLiked,setIsLiked] = useState(false);
+
+     const [blogLikes,setBlogLikes] = useState(0);
+     
 
     
     const router = useRouter();
+  
+   const params = useParams();
+
+ 
 
    const {data: session,status} = useSession();
 
@@ -58,6 +70,8 @@ const Blogdetails = ({params}) => {
             const response = await fetch(`http://localhost:3000/api/blog/${params.id}`);
             const blog = await response.json();
             setBlogDetails(blog);
+            setIsLiked(blog?.likes?.includes(session?.user?._id)); 
+            setBlogLikes(blog?.likes?.length || 0);
         } catch (error) {
             console.log(error)
         }
@@ -77,7 +91,84 @@ const Blogdetails = ({params}) => {
   
     const formattedTime = time.format("MMMM Do YYYY")
       
-   console.log(blogDetails)
+//   console.log(blogDetails?.image?.id)
+//   console.log(session?.user?.accessToken)
+
+
+
+ const handleBlogDelete = async (imageId) => {
+    try {
+        const confirmModal = window.confirm("Are you sure you want to delete your blog?")
+
+
+        if (confirmModal) {
+            setIsDeleting(true)
+
+            const response = await fetch(`http://localhost:3000/api/blog/${params.id}`,{
+                method: "DELETE",
+                headers:{
+                    Authorization: `Bearer ${session?.user?.accessToken} `
+                }
+            })
+
+            console.log(response?.status)
+               if(response?.status === 200){
+                await deletePhoto(imageId)
+                
+               
+               }
+        }
+        setIsDeleting(false)
+
+        router.refresh();
+
+        router.push("/blog")
+         
+    } catch (error) {
+   
+        console.log(error)
+        
+        
+    }
+    // console.log(imageId)
+
+ }
+
+   
+ const handleLike = async () => {
+  if(!session?.user){
+    alert("Please login before liking.")
+
+    return;
+  }
+
+  try { 
+
+    const response = await fetch(`http://localhost:3000/api/blog/${params.id}/like`,{
+        method: "PUT",
+        headers: { 
+            Authorization: `Bearer ${session?.user?.accessToken}`,
+
+             "Content-Type" : "application/json"
+        },
+        body: JSON.stringify(null)
+    })
+
+
+    if(response.status === 200 ){
+        setIsLiked(prev => !prev);
+        setBlogLikes(prev  => {
+            isLiked ? prev -1 : prev + 1 })
+    }else{
+        console.log("Request failed:",response.status)
+    }
+    
+  } catch (error) { 
+    console.log(error,"he")
+    
+  }
+ }
+  
 
   return (
    <section className="container max-w-3xl">
@@ -87,9 +178,9 @@ const Blogdetails = ({params}) => {
          <BsFillPencilFill/>
          Edit
        </Link>
-       <button className=' flex items-center gap-1 text-red-500'>
+       <button onClick={() => handleBlogDelete(blogDetails?.image?.id)} className=' flex items-center gap-1 text-red-500'>
             <BsTrash />
-             Delete
+           {isDeleting ? "Deleting..." : "Delete"}
        </button>
     </div> }
 
@@ -172,10 +263,14 @@ const Blogdetails = ({params}) => {
         <div className='flex gap-10 items-center text-xl justify-center'>
 
             <div className="flex items-center gap-1">
-                <p>12</p>
-
-                <AiFillHeart size={20} color='#ed5784' cursor="pointer" />
-                <AiFillHeart size={20}  cursor="pointer" />
+                <p> {blogLikes} </p>
+                  {
+                    isLiked ? (
+                        <AiFillHeart onClick={handleLike} size={20} color='#ed5784' cursor="pointer" />
+                    ) :  <AiOutlineHeart onClick={handleLike} size={20}  cursor="pointer" />
+                  }
+                
+               
             </div>
 
 

@@ -70,7 +70,7 @@ export async function POST(req) {
          const accessToken = req.headers.get("authorization");
          const token = accessToken.split(" ")[1];
             
-         console.log(accessToken)
+         // console.log(accessToken)
 
          const decodedToken = verifyJwtToken(token);
 
@@ -84,7 +84,7 @@ export async function POST(req) {
             const body = await req.json();
             const newBlog = await Blog.create(body);
 
-            console.log(newBlog)
+            // console.log(newBlog)
 
             return NextResponse.json(newBlog,{status:201})
             

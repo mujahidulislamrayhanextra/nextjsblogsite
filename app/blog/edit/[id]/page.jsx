@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Input from '@/components/Input';
 import Link from 'next/link';
  
-import { useRouter } from 'next/navigation'; 
+import { useParams, useRouter } from 'next/navigation'; 
 import Textarea from '@/components/Textarea';
 
 import demoImage  from "@/public/img/demo_image.jpg"
@@ -26,7 +26,7 @@ const initialState = {
 }
 
 
-const EditBlog = ({params}) => {
+const EditBlog = () => {
 
 
 const CLOUD_NAME ="dsivlvees"
@@ -47,7 +47,7 @@ const UPLOAD_PRESET ="nextjs_blog_image"
    const {data: session,status} = useSession();
   //  const sess = useSession();
 
-
+ const params = useParams();
 
   //  console.log(sess)
 
@@ -163,7 +163,7 @@ const UPLOAD_PRESET ="nextjs_blog_image"
         image = await uploadImage()
 
         if(state.photo?.id){
-
+       
             await deletePhoto(state.photo.id)
 
         }else{

@@ -59,7 +59,7 @@ const UPLOAD_PRESET ="nextjs_blog_image"
       setState({...state, [name]:value})
     }
   }
- console.log(state)
+//  console.log(state)
   const handleSubmit = async(e) =>{
     e.preventDefault();
 
