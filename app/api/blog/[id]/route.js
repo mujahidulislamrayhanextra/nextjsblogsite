@@ -67,7 +67,7 @@ import { verifyJwtToken } from '@/lib/jwt';
 export async function PUT(req,res) {
          await connect();
          
-         const id = res.params.id;
+         const id = (await res.params).id;
 
          const accessToken = req.headers.get("authorization");
          const token = accessToken.split(" ")[1];
@@ -112,7 +112,7 @@ export async function GET(req,res) {
 
    await connect() ;
 
-   const id = res.params.id
+   const id = (await res.params).id
     try {
       const blog = await Blog.findById(id).populate({
          path: "authorId",
@@ -134,7 +134,7 @@ export async function GET(req,res) {
 export async function DELETE(req,res) {
     await connect();
     
-    const id = res.params.id;
+    const id = (await res.params).id;
 
     const accessToken = req.headers.get("authorization");
     const token = accessToken.split(" ")[1];

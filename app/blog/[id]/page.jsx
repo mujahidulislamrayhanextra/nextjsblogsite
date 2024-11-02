@@ -54,15 +54,34 @@ const Blogdetails = () => {
 
      const [blogLikes,setBlogLikes] = useState(0);
      
+     const [alreadyLiked,setAlreadyLiked] = useState([]);
+    
+     const [commnetText,setCommentText] = useState("");
+
+     const [isCommenting,setIsCommenting] = useState(false);
+
+     const [blogComment,setBlogComment] = useState(0);
+
+     const [error,setError] = useState("")
+
+     const [success,setSuccess] = useState("")
 
     
     const router = useRouter();
   
    const params = useParams();
 
- 
+ console.log(alreadyLiked)
 
    const {data: session,status} = useSession();
+
+   console.log(session)
+   
+
+    const match = alreadyLiked.find(numbers => numbers === session?.user?._id )
+
+  
+  
 
     async function fetchBlog() {
 
@@ -71,7 +90,10 @@ const Blogdetails = () => {
             const blog = await response.json();
             setBlogDetails(blog);
             setIsLiked(blog?.likes?.includes(session?.user?._id)); 
-            setBlogLikes(blog?.likes?.length || 0);
+            setBlogLikes(blog?.likes?.length);
+            setAlreadyLiked(blog?.likes);
+            setBlogComment(blog?.comments?.length || 0 );
+            // console.log()
         } catch (error) {
             console.log(error)
         }
@@ -170,6 +192,61 @@ const Blogdetails = () => {
  }
   
 
+ const handleCommnetSubmit = async(e) =>{
+  e.preventDefault();
+
+ 
+  
+
+  if( !commnetText  ){
+    setError("Commnet text is required");
+    return
+  }
+ 
+       
+  
+    try {
+      setIsCommenting(true)
+      setError("")
+      
+      const newComment = {
+        text: commnetText
+      }
+
+
+      const response = await fetch(`http://localhost:3000/api/blog/${params.id}/comment`,{
+        headers: { 
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session?.user?.accessToken}`
+        },  
+        method: "POST", 
+        body: JSON.stringify(newComment) 
+      })
+        
+   
+       
+      if(response?.status === 201){ 
+        setSuccess("Commnet created successfully.")
+        setTimeout(() => {
+          setCommentText("");
+          fetchBlog()
+        },500);
+        
+      }else{
+      
+        setError("Error occured while creating comment")
+      }
+    } catch (error) {
+      console.log(error,error.message)
+      setError("Error occured while creating comment")
+       
+    }
+
+    setIsCommenting(false)
+
+    }
+
+
   return (
    <section className="container max-w-3xl">
 
@@ -265,7 +342,7 @@ const Blogdetails = () => {
             <div className="flex items-center gap-1">
                 <p> {blogLikes} </p>
                   {
-                    isLiked ? (
+                    isLiked || match  ? (
                         <AiFillHeart onClick={handleLike} size={20} color='#ed5784' cursor="pointer" />
                     ) :  <AiOutlineHeart onClick={handleLike} size={20}  cursor="pointer" />
                   }
@@ -276,7 +353,7 @@ const Blogdetails = () => {
 
             
             <div className="flex items-center gap-1">
-                <p>12</p>
+                <p>{blogComment}</p>
 
                 <AiOutlineComment size={20}  />
                  
@@ -287,29 +364,58 @@ const Blogdetails = () => {
      </div>
 
          <div>
-              <h3 className='text-red-500'>Kindly login to leave a comment.</h3>
-               <form className='space-y-2'>
 
-                    <Input name="comment" type="text" placeholder="Type message..." />
+           {
+            !session?.user && ( <h3 className='text-red-500'>Kindly login to leave a comment.</h3>)
+           }
+             {
+              session?.user && (
+              <form onSubmit={handleCommnetSubmit} className='space-y-2'>
 
-                    <button type='submit'className='btn' >
-                        comment
+                <Input onChange={e => setCommentText(e.target.value)} value={commnetText} name="comment" type="text" placeholder="Type message..." />
 
-                    </button>
+                <button type='submit'className='btn' >
+                    {
+                      isCommenting ? "Loading" : "Comment"
+                    }
 
-               </form>
+                </button>
 
-               <div className='flex gap-3 py-5 items-center' >
+           </form>
+           )
+
+             }
+
+             {blogDetails?.comments && blogDetails?.comments.length === 0 && (
+              <p>No Comment</p>
+             ) }
+
+{blogDetails?.comments && blogDetails?.comments.length > 0 && (
+              <>
+              {blogDetails?.comments.map(comment => (
+                      
+                
+                      <div key={comment._id} className='flex gap-3 py-5 items-center' >
                     
-            <Image src={demoImage}  alt='avater image' width={0} height={0} sizes='100vw' className='w-10 h-10 rounded-full'/>
-            <div>
-                <p className='text-whiteColor'>John</p>
-                <p>This is our first comment</p>
-                </div>
-                <BsTrash cursor="pointer" className='text-red-500 ml-10'/> 
+                      <Image src={comment?.user?.avatar?.url ? comment?.user?.avatar?.url :  demoImage}  alt='avater image' width={0} height={0} sizes='100vw' className='w-10 h-10 rounded-full'/>
+                      <div>
+                          <p className='text-whiteColor'>{comment?.user?.name  }</p>
+                          <p>{comment.text}</p>
+                          </div>
+                          <BsTrash cursor="pointer" className='text-red-500 ml-10'/> 
+          
+                         
+                         </div>
 
-               
-               </div>
+
+
+
+              ))}
+              </>
+             ) }
+                
+
+           
          </div>
    </section>
   )

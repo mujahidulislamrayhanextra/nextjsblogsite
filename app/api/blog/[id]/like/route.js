@@ -11,7 +11,7 @@ import { verifyJwtToken } from '@/lib/jwt';
 export async function PUT(req, res) {
     await connect();
 
-    const id = res.params.id;
+    const id = (await res.params).id;
 
     const accessToken = req.headers.get("authorization");
     const token = accessToken.split(" ")[1];
