@@ -16,8 +16,8 @@ const FirstBlog = ({ firstBlog }) => {
 
   const formattedTime = time.format("MMMM Do YYYY")
     
-  console.log("firstBlog",firstBlog) 
-  console.log("userImg",firstBlog?.avatar?.url) 
+  // console.log("firstBlog",firstBlog) 
+  // console.log("userImg",firstBlog?.avatar?.url) 
   
 
 

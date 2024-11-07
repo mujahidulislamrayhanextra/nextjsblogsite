@@ -12,8 +12,8 @@ import demoImage from "@/public/img/demo_image.jpg";
 import { AiOutlineClose } from "react-icons/ai";
 
 const ProfileDetails = ({ profile, params }) => {
- const  CLOUD_NAME ="dsivlvees"
- const UPLOAD_PRESET ="nextjs_blog_image";
+ const  CLOUD_NAME = process.env.CLOUD_NAME   
+ const UPLOAD_PRESET = process.env.UPLOAD_PRESET
 
 //  console.log(profile)
 
