@@ -284,11 +284,11 @@ const handleCancelUploadImg  = () => {
                     <label className="block">Select an option</label>
                     <select name="category" onChange={handleChange} 
                    value={state.category} className="block rounded-lg w-full p-3 bg-primaryColorLight " >
-                   <option value="Songbirds">Songbirds</option>
-                   <option value="Waterfowls">Waterfowls</option>
-                   <option value="Parrots">Parrots</option>
-                   <option value="Seabirds">Seabirds</option>
-                   <option value="Gamebirds">Gamebirds</option>
+                   <option value="Politics">Politics</option>
+                   <option value="History">History</option>
+                   <option value="Religion ">Religion </option>
+                   <option value="Health">Health</option>
+                   <option value="Others">Others</option>
                    </select>
                    </div>
                    

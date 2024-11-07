@@ -1,8 +1,9 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import  john  from '@/public/img/john.jpg';
+import demoImage from '@/public/img/demo_image.jpg'
 import { AiOutlineClose } from 'react-icons/ai';
 import { usePathname } from 'next/navigation';
 import { signOut,useSession } from 'next-auth/react';
@@ -10,8 +11,33 @@ import { signOut,useSession } from 'next-auth/react';
 
 const Navber = () => {
    
-
+  const [userData,setUserData] = useState({});
   const {data: session ,status} = useSession();
+  // console.log(session)
+
+
+
+
+
+   async function fetchUser() {
+
+        try {
+          
+            const response = await fetch(`http://localhost:3000/api/user/${session?.user?._id}`);
+          
+              const resData = await response.json();
+              setUserData(resData)
+          
+        } catch (error) {
+            console.log(error)
+        }
+        
+    }
+    useEffect( () => {
+
+      fetchUser();
+
+    },[session?.user?._id])
 
   const pathname = usePathname()
 
@@ -35,7 +61,7 @@ const Navber = () => {
         </li>
 
          {
-          session?.user ? (
+          session?.user ? ( 
             <>
               <li>
           <Link href="/create-blog"  className={ pathname === '/create-blog' ? "text-primaryColor font-bold" : " "}  >Create</Link>
@@ -44,9 +70,12 @@ const Navber = () => {
           <div className='relative'>
               <Image 
               onClick={handleShowDropdown}
-              src={john}
+              src={userData?.avatar?.url ? userData?.avatar?.url : demoImage}
               alt='avater'
               sizes='100vw'
+              width={0}
+              height={0}
+            
               className='w-10 h-10 rounded-full cursor-pointer'
                />
                {showDropdown && (
@@ -55,7 +84,7 @@ const Navber = () => {
                     <AiOutlineClose onClick={handleHideDropdown} className='w-full cursor-pointer'  />
 
                     <button onClick={() => {signOut(); handleHideDropdown();}}> Logout</button>
-                    <Link onClick={handleHideDropdown} href="/user" >profile
+                    <Link onClick={handleHideDropdown} href={`/user/${session?.user?._id.toString()}`} >profile
                     </Link>
 
                   </div>

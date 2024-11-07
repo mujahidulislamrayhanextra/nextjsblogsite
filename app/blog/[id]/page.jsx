@@ -56,32 +56,36 @@ const Blogdetails = () => {
      
      const [alreadyLiked,setAlreadyLiked] = useState([]);
     
-     const [commnetText,setCommentText] = useState("");
+     const [commentText,setCommentText] = useState("");
 
      const [isCommenting,setIsCommenting] = useState(false);
 
      const [blogComment,setBlogComment] = useState(0);
+     const [userId,setUserId] = useState("")
 
      const [error,setError] = useState("")
 
-     const [success,setSuccess] = useState("")
+     const [success,setSuccess] = useState("");
+
 
     
     const router = useRouter();
   
    const params = useParams();
 
- console.log(alreadyLiked)
+//  console.log(alreadyLiked)
 
    const {data: session,status} = useSession();
 
-   console.log(session)
+// const [userF,setUserF] = useState({});
+
+// console.log(userF)
    
 
     const match = alreadyLiked.find(numbers => numbers === session?.user?._id )
 
-  
-  
+      
+  // console.log(params)
 
     async function fetchBlog() {
 
@@ -90,19 +94,49 @@ const Blogdetails = () => {
             const blog = await response.json();
             setBlogDetails(blog);
             setIsLiked(blog?.likes?.includes(session?.user?._id)); 
-            setBlogLikes(blog?.likes?.length);
+            setBlogLikes(blog?.likes?.length || 0);
             setAlreadyLiked(blog?.likes);
             setBlogComment(blog?.comments?.length || 0 );
-            // console.log()
+            setUserId(blog?.authorId?._id);
+            console.log(blog)
         } catch (error) {
             console.log(error)
         }
         
     }
 
+    // console.log(userId)
+  // const idd = userId;
+  // console.log(idd)
+
+  // const fingUser = session?.user?._id;
+
+  // console.log(fingUser)
+
+
+    // async function fetchBlog1() {
+
+    //     try {
+          
+    //         const response = await fetch(`http://localhost:3000/api/user/${session?.user?._id}`);
+    //         if (!response) {
+    //           return console.log("get errot respomse")
+              
+    //         }
+    //         const userr = await response.json();
+          
+    //        setUserF(userr)
+          
+    //     } catch (error) {
+    //         console.log(error)
+    //     }
+        
+    // }
+
 
     useEffect(() => {
-        fetchBlog()
+        fetchBlog();
+        // fetchBlog1();
     },[])
 
 
@@ -192,14 +226,14 @@ const Blogdetails = () => {
  }
   
 
- const handleCommnetSubmit = async(e) =>{
+ const handleCommentSubmit = async(e) =>{
   e.preventDefault();
 
  
   
 
-  if( !commnetText  ){
-    setError("Commnet text is required");
+  if( !commentText  ){
+    setError("Comment text is required");
     return
   }
  
@@ -210,7 +244,7 @@ const Blogdetails = () => {
       setError("")
       
       const newComment = {
-        text: commnetText
+        text: commentText
       }
 
 
@@ -226,9 +260,9 @@ const Blogdetails = () => {
    
        
       if(response?.status === 201){ 
-        setSuccess("Commnet created successfully.")
+        setSuccess("Comment created successfully.")
         setTimeout(() => {
-          setCommentText("");
+          setCommentText(""); 
           fetchBlog()
         },500);
         
@@ -245,6 +279,43 @@ const Blogdetails = () => {
     setIsCommenting(false)
 
     }
+
+    const handleDeleteComment = async (commentId) =>{
+
+          console.log("object");
+          console.log(commentId)
+
+      try {
+   
+  
+  
+        const response = await fetch(`http://localhost:3000/api/blog/${params.id}/comment/${commentId}`,{
+          headers: { 
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session?.user?.accessToken}`
+          },  
+          method: "DELETE", 
+     
+        })
+          
+     
+         if (response.status === 200) {
+          fetchBlog();
+          
+         }else{
+          console.log("Request failed ",response.status)
+         }
+        console.log(response.status)
+      } catch (error) {
+        console.log(error,error.message)
+  
+         
+      }
+
+
+
+    }
+
 
 
   return (
@@ -370,9 +441,9 @@ const Blogdetails = () => {
            }
              {
               session?.user && (
-              <form onSubmit={handleCommnetSubmit} className='space-y-2'>
+              <form onSubmit={handleCommentSubmit} className='space-y-2'>
 
-                <Input onChange={e => setCommentText(e.target.value)} value={commnetText} name="comment" type="text" placeholder="Type message..." />
+                <Input onChange={e => setCommentText(e.target.value)} value={commentText} name="comment" type="text" placeholder="Type message..." />
 
                 <button type='submit'className='btn' >
                     {
@@ -402,7 +473,13 @@ const Blogdetails = () => {
                           <p className='text-whiteColor'>{comment?.user?.name  }</p>
                           <p>{comment.text}</p>
                           </div>
-                          <BsTrash cursor="pointer" className='text-red-500 ml-10'/> 
+
+                          {
+                            session?.user?._id === comment?.user?._id &&         <BsTrash onClick={() => handleDeleteComment(comment?._id)} cursor="pointer" className='text-red-500 ml-10'/> 
+                          }
+
+
+                  
           
                          
                          </div>

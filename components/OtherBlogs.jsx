@@ -43,7 +43,7 @@ const OtherBlogs = ({ otherBlogs }) => {
 
 
             <div className='flex items-center gap-3'>
-              <Image src={item?.authorId?.avater?.url ? item?.authorId?.avater?.url : demoImage } alt='picture of author' width={0} height={0} sizes='100vw'  className='w-10 h-10 rounded-full' />
+              <Image src={item?.authorId?.avatar?.url ? item?.authorId?.avatar?.url : demoImage } alt='picture of author' width={0} height={0} sizes='100vw'  className='w-10 h-10 rounded-full' />
            </div>
 
           <div className='text-xs'>

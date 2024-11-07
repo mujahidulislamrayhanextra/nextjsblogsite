@@ -63,9 +63,13 @@ import Blog from '@/model/Blog';
 import { connect } from '@/lib/db';
 import { NextResponse } from 'next/server';
 import { verifyJwtToken } from '@/lib/jwt';
+import { headers } from 'next/headers';
 
 export async function POST(req) {
+   // const headerss = headers();
+   // console.log(headerss)
          await connect();
+         console.log("resaddf",req)
          
          const accessToken = req.headers.get("authorization");
          const token = accessToken.split(" ")[1];
@@ -97,6 +101,8 @@ export async function POST(req) {
 
 
 export async function GET(req) {
+   // const headerss = await headers();
+   console.log(req)
 
    await connect() ;
     try {

@@ -11,7 +11,7 @@ import User from '@/model/User';
 export async function POST(req,res) {
     await connect();
     
-    const id = res.params.id
+    const id =(await res.params).id
     const accessToken = req.headers.get("authorization");
     const token = accessToken.split(" ")[1];
        
@@ -32,11 +32,11 @@ export async function POST(req,res) {
 
        const user = await User.findById(decodedToken._id) 
 
-       const newCommnet  = {
+       const newComment  = {
         text:body.text,
         user
        }
-       blog.comments.unshift(newCommnet)
+       blog.comments.unshift(newComment)
        await blog.save();
 
        // console.log(newBlog)

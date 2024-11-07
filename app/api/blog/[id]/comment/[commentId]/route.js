@@ -6,19 +6,23 @@ import { connect } from '@/lib/db';
 import { NextResponse } from 'next/server';
 import { verifyJwtToken } from '@/lib/jwt';
 
+import { headers } from 'next/headers';
 
 export async function DELETE(req,res) {
     await connect();
-    
+    //  const head = headers()
+    // console.log("hat",head)
     const id = (await res.params).id;
       
-    const commentId = res.params.commentId
+    const commentId =( await res.params).commentId
+    
+    // console.log(commentId)
+    // console.log(req)
 
-
-    const accessToken = req.headers.get("authorization");
+    const accessToken = await req.headers.get("authorization");
     const token = accessToken.split(" ")[1];
         
-   //  console.log(accessToken)
+    // console.log(accessToken)
 
     const decodedToken = verifyJwtToken(token);
 
@@ -26,7 +30,9 @@ export async function DELETE(req,res) {
        return NextResponse.json({
            error: "unauthorized (wrong or expried token)"
        },
-       {status:403} 
+       {status:403} ,
+
+       
    
    )
     } 
@@ -34,13 +40,16 @@ export async function DELETE(req,res) {
 
      
     
-       const blog = await Blog.findById(id).populate("authorId").populate("commnents.user")
+       const blog = await Blog.findById(id).populate("authorId").populate("comments.user")
 
-   const comment = blog.comments.find(commnet => comment.id === commentId)
+   const comment = blog.comments.find(comment => comment.id === commentId)
+
+//  console.log("comment",comment)
+
 
   if (!comment) {
     return NextResponse.json({
-        message: "commnet does not exist"
+        message: "comment does not exist"
     },{status:404})
     
   }

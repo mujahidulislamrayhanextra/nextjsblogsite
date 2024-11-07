@@ -16,7 +16,9 @@ const FirstBlog = ({ firstBlog }) => {
 
   const formattedTime = time.format("MMMM Do YYYY")
     
-  // console.log(dddd) 
+  console.log("firstBlog",firstBlog) 
+  console.log("userImg",firstBlog?.avatar?.url) 
+  
 
 
 
@@ -43,7 +45,7 @@ const FirstBlog = ({ firstBlog }) => {
             </div>
 
            <div className='flex items-center gap-3'>
-              <Image src={firstBlog?.authorId?.avater?.url ? firstBlog?.authorId?.avater?.url : demoImage } alt='picture of author' width={0} height={0} sizes='100vw'  className='w-10 h-10 rounded-full' />
+              <Image src={firstBlog?.authorId?.avatar?.url ? firstBlog?.authorId?.avatar?.url : demoImage } alt='picture of author' width={0} height={0} sizes='100vw'  className='w-10 h-10 rounded-full' />
            </div>
 
           <div className='text-xs'>

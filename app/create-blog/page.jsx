@@ -120,7 +120,7 @@ const UPLOAD_PRESET ="nextjs_blog_image"
           authorId: session?.user?._id
         }
 
-
+       
         const response = await fetch("http://localhost:3000/api/blog",{
           headers: { 
             "Content-Type": "application/json",
@@ -129,8 +129,9 @@ const UPLOAD_PRESET ="nextjs_blog_image"
           method: "POST", 
           body: JSON.stringify(newBlog) 
         })
-          
-     
+        //   console.log(newBlog)
+        // console.log(response?.status)
+        // console.log(session?.user?.accessToken)
          
         if(response?.status === 201){ 
           setSuccess("Blog created successfully.")
@@ -138,6 +139,7 @@ const UPLOAD_PRESET ="nextjs_blog_image"
             router.refresh();
             router.push("/blog")
           },1500);
+        
           
         }else{
         
@@ -212,11 +214,11 @@ const UPLOAD_PRESET ="nextjs_blog_image"
                     <label className="block">Select an option</label>
                     <select name="category" onChange={handleChange} 
                    value={state.category} className="block rounded-lg w-full p-3 bg-primaryColorLight " >
-                   <option value="Songbirds">Songbirds</option>
-                   <option value="Waterfowls">Waterfowls</option>
-                   <option value="Parrots">Parrots</option>
-                   <option value="Seabirds">Seabirds</option>
-                   <option value="Gamebirds">Gamebirds</option>
+                   <option value="Politics">Politics </option>
+                   <option value="History">History</option>
+                   <option value="Religion ">Religion </option>
+                   <option value="Health ">Health </option>
+                   <option value="Others">Others</option>
                    </select>
                    </div>
                    
